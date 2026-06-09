@@ -182,7 +182,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
 
 .empty-state{text-align:center;padding:30px 16px;color:var(--text3);font-size:13px}
 .empty-state b{color:var(--blue);cursor:pointer}
+.pdf-btn{background:var(--navy2);color:#fff;border:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.pdf-btn:hover{background:var(--navy)}
+.pdf-btn:disabled{opacity:.6;cursor:not-allowed}
+
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div id="toast"></div>
@@ -245,6 +251,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
       </div>
     </div>
     <button class="add-btn" onclick="openModal()"><i class="ti ti-plus"></i> Agregar hallazgo</button>
+    <button class="pdf-btn" onclick="exportarPDF()" id="pdfBtn"><i class="ti ti-file-type-pdf"></i> Exportar PDF</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('resumen',this)"><i class="ti ti-layout-dashboard"></i>General</button>
@@ -381,6 +388,145 @@ function openModal(sis){document.getElementById('fSite').value=currentSite;if(si
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
 function previewFotos(input){const prev=document.getElementById('fotoPreview');prev.innerHTML='';Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.className='foto-thumb';prev.appendChild(img);};r.readAsDataURL(f);});}
 function guardarHallazgo(){const site=document.getElementById('fSite').value,sis=document.getElementById('fSistema').value,desc=document.getElementById('fDesc').value.trim(),crit=document.getElementById('fCriticidad').value,est=document.getElementById('fEstatus').value,resp=document.getElementById('fResp').value.trim(),fecha=document.getElementById('fFecha').value,notas=document.getElementById('fNotas').value.trim();if(!desc){toast('Escribe la descripción','err');return;}const nuevo={site,sis,id:'local_'+Date.now(),desc:notas?desc+' — '+notas:desc,crit,fecha,est,resp,foto:''};const pending=JSON.parse(localStorage.getItem('hallazgos_pendientes')||'[]');pending.push(nuevo);localStorage.setItem('hallazgos_pendientes',JSON.stringify(pending));allData.push(nuevo);localStorage.setItem('allData_cache',JSON.stringify(allData));renderSite(currentSite);closeModal();toast('✓ Hallazgo guardado','ok');}
+
+async function exportarPDF() {
+  const btn = document.getElementById('pdfBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader"></i> Generando...';
+  toast('Generando PDF...', 'ok');
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const meta = SITE_META[currentSite] || {des:'—',vis:'—',go:'—',upd:'—'};
+  const h = allData.filter(r => r.site === currentSite);
+  const elec = h.filter(x => x.sis === 'Eléctrico');
+  const pci = h.filter(x => x.sis === 'PCI');
+  const tC = h.filter(x => x.est === 'COMPLETADO').length;
+  const pct = h.length ? Math.round(tC / h.length * 100) : 0;
+  const fecha = new Date().toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'});
+
+  const W = 210, M = 14;
+
+  // ── HEADER ──────────────────────────────────────────
+  doc.setFillColor(28, 48, 84);
+  doc.rect(0, 0, W, 38, 'F');
+  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+  doc.text('Reporte de Comisionamiento', M, 14);
+  doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.setTextColor(180,200,230);
+  doc.text('Ingeniería de Planta · MELI Sites', M, 22);
+  doc.setFontSize(10); doc.setTextColor(180,200,230);
+  doc.text('Generado: ' + fecha, M, 30);
+
+  // Badge amarillo MELI
+  doc.setFillColor(255,230,0);
+  doc.roundedRect(W-50, 10, 36, 10, 2, 2, 'F');
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+  doc.text('MELI Sites', W-41, 17);
+
+  // ── INFO SITE ────────────────────────────────────────
+  let y = 46;
+  doc.setFillColor(240,242,245);
+  doc.roundedRect(M, y, W-M*2, 32, 3, 3, 'F');
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(28,48,84);
+  doc.text('Site: ' + currentSite, M+6, y+10);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(70,85,104);
+  doc.text('Desarrollador: ' + meta.des, M+6, y+18);
+  doc.text('Visita: ' + meta.vis + '   ·   Go-live: ' + meta.go + '   ·   Actualizado: ' + meta.upd, M+6, y+25);
+
+  // Avance
+  doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(28,48,84);
+  doc.text(pct + '% completado', W-M-30, y+14);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(100,120,140);
+  doc.text(tC + ' de ' + h.length + ' hallazgos cerrados', W-M-30, y+22);
+
+  // ── KPI BOXES ────────────────────────────────────────
+  y += 40;
+  const kpis = [
+    {l:'Total',v:h.length,bg:[235,245,255],tc:[44,82,130]},
+    {l:'Pendientes',v:h.filter(x=>x.est==='PENDIENTE').length,bg:[254,242,242],tc:[197,48,48]},
+    {l:'Completados',v:tC,bg:[230,250,244],tc:[0,163,117]},
+    {l:'Revisar',v:h.filter(x=>x.est==='REVISAR').length,bg:[255,247,237],tc:[192,86,33]},
+    {l:'ALTO',v:h.filter(x=>x.crit==='ALTO').length,bg:[254,242,242],tc:[197,48,48]},
+    {l:'MODERADO',v:h.filter(x=>x.crit==='MODERADO').length,bg:[250,245,255],tc:[85,60,154]},
+  ];
+  const bw = (W - M*2 - 10) / 6;
+  kpis.forEach((k,i) => {
+    const x = M + i*(bw+2);
+    doc.setFillColor(...k.bg);
+    doc.roundedRect(x, y, bw, 20, 2, 2, 'F');
+    doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(...k.tc);
+    doc.text(String(k.v), x + bw/2, y+12, {align:'center'});
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(100,120,140);
+    doc.text(k.l, x + bw/2, y+18, {align:'center'});
+  });
+
+  // ── TABLA HALLAZGOS ──────────────────────────────────
+  function drawTable(items, titulo, color) {
+    if(!items.length) return;
+    y += 4;
+    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(...color);
+    doc.text(titulo + ' (' + items.length + ' hallazgos)', M, y);
+    y += 5;
+    // Header tabla
+    doc.setFillColor(...color);
+    doc.rect(M, y, W-M*2, 7, 'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+    doc.text('#', M+2, y+5);
+    doc.text('Descripción', M+10, y+5);
+    doc.text('Criticidad', M+118, y+5);
+    doc.text('Estatus', M+142, y+5);
+    doc.text('Responsable', M+162, y+5);
+    y += 7;
+    items.forEach((item, idx) => {
+      if(y > 270) { doc.addPage(); y = 20; }
+      const bg = idx%2===0 ? [255,255,255] : [248,250,255];
+      doc.setFillColor(...bg);
+      doc.rect(M, y, W-M*2, 9, 'F');
+      doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(30,40,60);
+      doc.text(String(idx+1), M+2, y+6);
+      const descLines = doc.splitTextToSize(item.desc, 100);
+      doc.text(descLines[0], M+10, y+6);
+      // Criticidad pill
+      const critColor = item.crit==='ALTO'?[229,62,62]:item.crit==='MODERADO'?[221,107,32]:[0,196,140];
+      doc.setFillColor(...critColor.map(c=>Math.min(255,c+180)));
+      doc.roundedRect(M+116, y+1, 22, 6, 1, 1, 'F');
+      doc.setTextColor(...critColor);
+      doc.setFontSize(6.5);
+      doc.text(item.crit==='SIN IMPACTO'?'S/I':item.crit.substring(0,3), M+127, y+5.5, {align:'center'});
+      // Estatus
+      const estColor = item.est==='COMPLETADO'?[0,163,117]:item.est==='PENDIENTE'?[197,48,48]:[192,86,33];
+      doc.setFillColor(...estColor.map(c=>Math.min(255,c+180)));
+      doc.roundedRect(M+140, y+1, 22, 6, 1, 1, 'F');
+      doc.setTextColor(...estColor);
+      doc.text(item.est.substring(0,4), M+151, y+5.5, {align:'center'});
+      doc.setTextColor(100,120,140); doc.setFontSize(7);
+      doc.text(item.resp||'—', M+162, y+6);
+      y += 9;
+    });
+    y += 6;
+  }
+
+  y += 28;
+  drawTable(elec, '⚡ Sistema Eléctrico', [28,48,84]);
+  drawTable(pci, '🔥 Sistema PCI', [180,50,50]);
+
+  // ── FOOTER ───────────────────────────────────────────
+  const pages = doc.getNumberOfPages();
+  for(let p=1; p<=pages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(240,242,245);
+    doc.rect(0, 287, W, 10, 'F');
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(130,140,160);
+    doc.text('Ingeniería de Planta MELI · Reporte Comisionamiento · ' + fecha, M, 293);
+    doc.text('Página ' + p + ' de ' + pages, W-M, 293, {align:'right'});
+  }
+
+  doc.save('Reporte_Comisionamiento_' + currentSite + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-file-type-pdf"></i> Exportar PDF';
+  toast('✓ PDF descargado', 'ok');
+}
+
 (async function(){const cached=localStorage.getItem('allData_cache');if(cached){allData=JSON.parse(cached);renderSite('XDQR02');}await cargarDatos();setInterval(cargarDatos,120000);})();
 </script>
 </body>
