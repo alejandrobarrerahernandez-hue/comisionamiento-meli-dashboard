@@ -8,81 +8,111 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-:root{--navy:#0F1B2D;--navy2:#162236;--navy3:#1C2E45;--yellow:#FFE600;--border:#253650;--border2:#2E4060;--text:#E8EDF3;--text2:#A0B0C5;--text3:#6B82A0;--green:#00C48C;--red:#FF4D4D;--orange:#FF8C00;--blue:#378ADD;--card:#1A2B42;--card2:#1E3050}
+:root{
+  --navy:#0F1B2D;--navy2:#162236;--navy3:#1C2E45;
+  --yellow:#FFE600;--border:#253650;--border2:#2E4060;
+  --text:#E8EDF3;--text2:#A0B0C5;--text3:#6B82A0;
+  --green:#00C48C;--red:#FF4D4D;--orange:#FF8C00;--blue:#378ADD;
+  --card:#1A2B42;--card2:#1E3050;
+}
 body{background:var(--navy);color:var(--text);min-height:100vh}
-.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:12px 16px}
-.kpi-card{background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;border-top:3px solid var(--border2)}
-.kpi-card.c-yellow{border-top-color:var(--yellow)}.kpi-card.c-red{border-top-color:var(--red)}.kpi-card.c-green{border-top-color:var(--green)}.kpi-card.c-orange{border-top-color:var(--orange)}.kpi-card.c-blue{border-top-color:var(--blue)}.kpi-card.c-purple{border-top-color:#9B59FF}
-.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px}
-.kpi-val{font-size:24px;font-weight:700;color:#fff}.kpi-sub{font-size:10px;color:var(--text3);margin-top:3px}
 .topbar{background:var(--navy);border-bottom:1px solid var(--border);padding:10px 16px 0}
 .topbar-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.topbar-title{display:flex;align-items:center;gap:10px}
+.topbar-title h1{font-size:17px;font-weight:700;color:#fff}
 .meli-badge{background:var(--yellow);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px}
 .topbar-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.cbadge{font-size:11px;font-weight:700;color:var(--text2)}
+.cbadge.active{color:var(--yellow)}
+.lang-btn{font-size:11px;font-weight:700;padding:2px 8px;border:1px solid var(--border2);border-radius:3px;background:transparent;color:var(--text2);cursor:pointer}
+.lang-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 16px;margin-top:4px}
 .tab{font-size:13px;padding:8px 16px;cursor:pointer;border:none;background:transparent;color:var(--text2);border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
 .tab.active{color:#fff;border-bottom-color:var(--yellow);font-weight:600}
+.tab i{font-size:14px}
+.fuente-bar{background:var(--navy2);padding:6px 16px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.fuente-link{color:var(--yellow);text-decoration:none;font-size:11px}
 .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 16px;background:var(--navy2);border-bottom:1px solid var(--border)}
 .filter-group label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
-.filter-group select{width:100%;background:var(--navy);border:1px solid var(--border2);color:var(--text);font-size:12px;padding:6px 10px;border-radius:4px}
+.filter-group select{width:100%;background:var(--navy);border:1px solid var(--border2);color:var(--text);font-size:12px;padding:6px 10px;border-radius:4px;cursor:pointer}
 .status-bar{padding:7px 16px;background:var(--navy3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;font-size:11px;color:var(--text2)}
 .status-bar .sep{color:var(--border2)}
+.sync-btn{background:var(--navy);border:1px solid var(--border2);color:var(--text2);font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:4px}
 .yel-btn{background:var(--yellow);color:#000;border:none;font-size:11px;font-weight:700;padding:3px 12px;border-radius:3px;cursor:pointer}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:12px 16px}
+.kpi-card{background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;border-top:3px solid var(--border2)}
+.kpi-card.c-yellow{border-top-color:var(--yellow)}.kpi-card.c-blue{border-top-color:var(--blue)}
+.kpi-card.c-orange{border-top-color:var(--orange)}.kpi-card.c-red{border-top-color:var(--red)}
+.kpi-card.c-green{border-top-color:var(--green)}.kpi-card.c-purple{border-top-color:#9B59FF}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px}
+.kpi-val{font-size:24px;font-weight:700;color:#fff}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:3px}
 .main-grid{display:grid;grid-template-columns:1fr 340px;gap:12px;padding:0 16px}
 .panel{background:var(--card);border:1px solid var(--border2);border-radius:6px;overflow:hidden;margin-bottom:12px}
 .panel-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .panel-title{font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px}
 .panel-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .panel-dot.yellow{background:var(--yellow)}.panel-dot.green{background:var(--green)}
-.panel-sub{font-size:11px;color:var(--text3)}.panel-body{padding:14px}
+.panel-sub{font-size:11px;color:var(--text3)}
+.panel-body{padding:14px}
 .prog-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .prog-lbl{font-size:12px;color:var(--text);width:140px;flex-shrink:0}
 .prog-track{flex:1;height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
-.prog-fill{height:100%;border-radius:3px}.prog-pct{font-size:11px;color:var(--text2);width:32px;text-align:right;flex-shrink:0}
+.prog-fill{height:100%;border-radius:3px}
+.prog-pct{font-size:11px;color:var(--text2);width:32px;text-align:right;flex-shrink:0}
 .htable{width:100%;border-collapse:collapse;font-size:12px}
 .htable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);padding:6px 10px;border-bottom:1px solid var(--border);text-align:left}
 .htable td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-.htable tr:last-child td{border-bottom:none}.htable tr:hover td{background:var(--card2)}
+.htable tr:last-child td{border-bottom:none}
+.htable tr:hover td{background:var(--card2)}
 .pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
-.pill-alto{background:rgba(255,77,77,.18);color:#FF7070}.pill-mod{background:rgba(255,140,0,.18);color:#FFB347}
-.pill-si{background:rgba(0,196,140,.18);color:#00C48C}.pill-pend{background:rgba(255,77,77,.15);color:#FF7070}
-.pill-comp{background:rgba(0,196,140,.15);color:#00C48C}.pill-rev{background:rgba(255,140,0,.15);color:#FFB347}
-.pill-elec{background:rgba(55,138,221,.15);color:#6BB5FF}.pill-pci{background:rgba(255,77,77,.15);color:#FF7070}
+.pill-alto{background:rgba(255,77,77,.18);color:#FF7070}
+.pill-mod{background:rgba(255,140,0,.18);color:#FFB347}
+.pill-si{background:rgba(0,196,140,.18);color:#00C48C}
+.pill-pend{background:rgba(255,77,77,.15);color:#FF7070}
+.pill-comp{background:rgba(0,196,140,.15);color:#00C48C}
+.pill-rev{background:rgba(255,140,0,.15);color:#FFB347}
+.pill-elec{background:rgba(55,138,221,.15);color:#6BB5FF}
+.pill-pci{background:rgba(255,77,77,.15);color:#FF7070}
 .itec-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
-.itec-row:last-child{border-bottom:none}.itec-label{color:var(--text2)}
+.itec-row:last-child{border-bottom:none}
+.itec-label{color:var(--text2)}
 .clegend{display:flex;gap:12px;font-size:11px;color:var(--text2);margin-bottom:8px}
 .clegend span{display:flex;align-items:center;gap:4px}
 .clegend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 .mini-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .mini-kpi{background:var(--navy3);border:1px solid var(--border);border-radius:4px;padding:8px 10px}
-.mini-kpi-label{font-size:10px;color:var(--text3);margin-bottom:2px}.mini-kpi-val{font-size:18px;font-weight:700;color:#fff}
+.mini-kpi-label{font-size:10px;color:var(--text3);margin-bottom:2px}
+.mini-kpi-val{font-size:18px;font-weight:700;color:#fff}
 .tab-content{display:none}.tab-content.active{display:block}
-.cbadge{font-size:11px;font-weight:700;color:var(--text2)}.cbadge.active{color:var(--yellow)}
-.lang-btn{font-size:11px;font-weight:700;padding:2px 8px;border:1px solid var(--border2);border-radius:3px;background:transparent;color:var(--text2);cursor:pointer}
-.lang-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.fuente-bar{background:var(--navy2);padding:6px 16px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
-.fuente-link{color:var(--yellow);text-decoration:none;font-size:11px}
-.sync-btn{background:var(--navy);border:1px solid var(--border2);color:var(--text2);font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.country-badges{display:flex;gap:6px;justify-content:flex-end;margin-top:3px}
+.lang-btns{display:flex;gap:4px}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-row1">
-    <div style="display:flex;align-items:center;gap:10px">
+    <div class="topbar-title">
       <i class="ti ti-bolt" style="color:var(--yellow);font-size:20px"></i>
       <div>
-        <h1 style="font-size:17px;font-weight:700;color:#fff">Comisionamiento MELI <span class="meli-badge">MELI Sites</span></h1>
+        <h1>Comisionamiento MELI <span class="meli-badge">MELI Sites</span></h1>
         <div class="topbar-sub">Reporte DQ / On-Site / Pruebas Eléctricas / Sistemas Contra Incendios</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:16px">
       <div style="text-align:right;font-size:11px;color:var(--text3)">
         Ingeniería de Planta
-        <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:3px">
-          <span class="cbadge active">MX</span><span class="cbadge">·</span><span class="cbadge">BR</span><span class="cbadge">·</span><span class="cbadge">AR</span><span class="cbadge">·</span><span class="cbadge">CL</span>
+        <div class="country-badges">
+          <span class="cbadge active">MX</span><span class="cbadge">·</span>
+          <span class="cbadge">BR</span><span class="cbadge">·</span>
+          <span class="cbadge">AR</span><span class="cbadge">·</span>
+          <span class="cbadge">CL</span>
         </div>
       </div>
-      <div style="display:flex;gap:4px"><button class="lang-btn active">ES</button><button class="lang-btn">EN</button></div>
+      <div class="lang-btns">
+        <button class="lang-btn active">ES</button>
+        <button class="lang-btn">EN</button>
+      </div>
     </div>
   </div>
   <div class="tabs">
@@ -93,86 +123,283 @@ body{background:var(--navy);color:var(--text);min-height:100vh}
     <button class="tab" onclick="switchTab('infotec',this)"><i class="ti ti-file-text"></i>Documentación</button>
   </div>
 </div>
-<div class="fuente-bar"><i class="ti ti-table" style="font-size:13px"></i> Fuente: <a class="fuente-link">Reporte Comisionamiento MELI.xlsx</a></div>
+<div class="fuente-bar">
+  <i class="ti ti-table" style="font-size:13px"></i>
+  Fuente: <a class="fuente-link">Reporte Comisionamiento MELI.xlsx</a>
+</div>
 <div class="filters">
   <div class="filter-group"><label>Site</label>
     <select id="selSite" onchange="loadSite(this.value)">
-      <option value="XDQR02">XDQR02</option><option value="MX12">MX12</option><option value="XEM03">XEM03</option><option value="MX13">MX13</option>
-    </select></div>
+      <option value="XDQR02">XDQR02</option><option value="MX12">MX12</option>
+      <option value="XEM03">XEM03</option><option value="MX13">MX13</option>
+    </select>
+  </div>
   <div class="filter-group"><label>Sistema</label>
-    <select id="selSistema" onchange="applyFilters()"><option value="">Todos</option><option value="Eléctrico">Eléctrico</option><option value="PCI">PCI</option></select></div>
+    <select id="selSistema" onchange="applyFilters()">
+      <option value="">Todos</option><option value="Eléctrico">Eléctrico</option><option value="PCI">PCI</option>
+    </select>
+  </div>
   <div class="filter-group"><label>Estatus</label>
-    <select id="selEstatus" onchange="applyFilters()"><option value="">Todos</option><option value="PENDIENTE">Pendiente</option><option value="COMPLETADO">Completado</option><option value="REVISAR">Revisar</option></select></div>
+    <select id="selEstatus" onchange="applyFilters()">
+      <option value="">Todos</option><option value="PENDIENTE">Pendiente</option>
+      <option value="COMPLETADO">Completado</option><option value="REVISAR">Revisar</option>
+    </select>
+  </div>
   <div class="filter-group"><label>Criticidad</label>
-    <select id="selCrit" onchange="applyFilters()"><option value="">Todas</option><option value="ALTO">Alto</option><option value="MODERADO">Moderado</option><option value="SIN IMPACTO">Sin impacto</option></select></div>
+    <select id="selCrit" onchange="applyFilters()">
+      <option value="">Todas</option><option value="ALTO">Alto</option>
+      <option value="MODERADO">Moderado</option><option value="SIN IMPACTO">Sin impacto</option>
+    </select>
+  </div>
 </div>
-<div class="status-bar">
+<div class="status-bar" id="statusBar">
   <i class="ti ti-filter" style="font-size:13px;color:var(--yellow)"></i>
-  <span id="statCount">—</span><span class="sep">|</span><span id="statSite">—</span><span class="sep">|</span><span id="statUpdate">—</span>
+  <span id="statCount">—</span><span class="sep">|</span>
+  <span id="statSite">—</span><span class="sep">|</span>
+  <span id="statUpdate">—</span>
   <span style="flex:1"></span>
   <button class="sync-btn"><i class="ti ti-refresh" style="font-size:12px"></i> Sincronizar</button>
   <button class="yel-btn" onclick="clearFilters()">Limpiar selección</button>
 </div>
 <div class="kpi-row" id="kpiRow"></div>
+
 <div class="tab-content active" id="tabResumen">
   <div class="main-grid">
     <div>
-      <div class="panel"><div class="panel-head"><div class="panel-title"><span class="panel-dot yellow"></span>Avance por sistema</div><span class="panel-sub" id="progSubtitle">—</span></div><div class="panel-body" id="progBars"></div></div>
-      <div class="panel"><div class="panel-head"><div class="panel-title"><span class="panel-dot yellow"></span>Eléctrico vs PCI — hallazgos por estatus</div></div><div class="panel-body"><div class="clegend" id="barLegend"></div><div style="position:relative;width:100%;height:180px"><canvas id="barChart"></canvas></div></div></div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="panel-dot yellow"></span>Avance por sistema</div>
+          <span class="panel-sub" id="progSubtitle">—</span>
+        </div>
+        <div class="panel-body" id="progBars"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="panel-dot yellow"></span>Eléctrico vs PCI — hallazgos por estatus</div>
+        </div>
+        <div class="panel-body">
+          <div class="clegend" id="barLegend"></div>
+          <div style="position:relative;width:100%;height:180px"><canvas id="barChart"></canvas></div>
+        </div>
+      </div>
     </div>
     <div>
-      <div class="panel"><div class="panel-head"><div class="panel-title"><span class="panel-dot green"></span>Distribución por criticidad</div></div><div class="panel-body"><div class="clegend" id="donutLegend"></div><div style="position:relative;width:100%;height:160px"><canvas id="donutChart"></canvas></div></div></div>
-      <div class="panel"><div class="panel-head"><div class="panel-title"><span class="panel-dot yellow"></span>Parámetros del site</div></div><div class="panel-body" id="siteParams"></div></div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="panel-dot green"></span>Distribución por criticidad</div>
+        </div>
+        <div class="panel-body">
+          <div class="clegend" id="donutLegend"></div>
+          <div style="position:relative;width:100%;height:160px"><canvas id="donutChart"></canvas></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="panel-dot yellow"></span>Parámetros del site</div>
+        </div>
+        <div class="panel-body" id="siteParams"></div>
+      </div>
     </div>
   </div>
 </div>
-<div class="tab-content" id="tabElectrico"><div style="padding:0 16px"><div class="panel"><div class="panel-head"><div class="panel-title"><i class="ti ti-bolt" style="color:var(--yellow)"></i>Sistema Eléctrico — Detalle On-Site</div></div><div class="panel-body"><div class="mini-kpi-row" id="elecMini"></div><table class="htable"><thead><tr><th>#</th><th>Descripción</th><th>Criticidad</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="elecBody"></tbody></table></div></div></div></div>
-<div class="tab-content" id="tabPCI"><div style="padding:0 16px"><div class="panel"><div class="panel-head"><div class="panel-title"><i class="ti ti-flame" style="color:var(--red)"></i>Sistema PCI — Detalle On-Site</div></div><div class="panel-body"><div class="mini-kpi-row" id="pciMini"></div><table class="htable"><thead><tr><th>#</th><th>Descripción</th><th>Criticidad</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="pciBody"></tbody></table></div></div></div></div>
-<div class="tab-content" id="tabHallazgos"><div style="padding:0 16px"><div class="panel"><div class="panel-head"><div class="panel-title"><i class="ti ti-list-check" style="color:var(--yellow)"></i>Todos los hallazgos</div><span class="panel-sub" id="hallazgosCount">—</span></div><div class="panel-body" style="padding:10px"><table class="htable"><thead><tr><th>#</th><th>Sistema</th><th>Descripción</th><th>Criticidad</th><th>Fecha fin</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="allBody"></tbody></table></div></div></div></div>
-<div class="tab-content" id="tabInfotec"><div style="padding:0 16px"><div class="panel"><div class="panel-head"><div class="panel-title"><i class="ti ti-file-text" style="color:var(--yellow)"></i>Documentación técnica</div></div><div class="panel-body"><table class="htable"><thead><tr><th>Documento</th><th style="text-align:center">Eléctrico</th><th style="text-align:center">PCI</th></tr></thead><tbody id="infoTecBody"></tbody></table></div></div></div></div>
+
+<div class="tab-content" id="tabElectrico">
+  <div style="padding:0 16px">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="ti ti-bolt" style="color:var(--yellow)"></i>Sistema Eléctrico — Detalle On-Site</div></div>
+      <div class="panel-body">
+        <div class="mini-kpi-row" id="elecMini"></div>
+        <table class="htable"><thead><tr><th>#</th><th>Descripción</th><th>Criticidad</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="elecBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tabPCI">
+  <div style="padding:0 16px">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="ti ti-flame" style="color:var(--red)"></i>Sistema PCI — Detalle On-Site</div></div>
+      <div class="panel-body">
+        <div class="mini-kpi-row" id="pciMini"></div>
+        <table class="htable"><thead><tr><th>#</th><th>Descripción</th><th>Criticidad</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="pciBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tabHallazgos">
+  <div style="padding:0 16px">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="ti ti-list-check" style="color:var(--yellow)"></i>Todos los hallazgos</div><span class="panel-sub" id="hallazgosCount">—</span></div>
+      <div class="panel-body" style="padding:10px">
+        <table class="htable"><thead><tr><th>#</th><th>Sistema</th><th>Descripción</th><th>Criticidad</th><th>Fecha fin</th><th>Estatus</th><th>Responsable</th></tr></thead><tbody id="allBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tabInfotec">
+  <div style="padding:0 16px">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="ti ti-file-text" style="color:var(--yellow)"></i>Documentación técnica</div></div>
+      <div class="panel-body">
+        <table class="htable"><thead><tr><th>Documento</th><th style="text-align:center">Eléctrico</th><th style="text-align:center">PCI</th></tr></thead><tbody id="infoTecBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const SITES={XDQR02:{update:"28/10/25",visita:"3a visita",goLive:"15/01/2026",desarrollador:"GRUPO CHUFANI",elec:{comp:2,pend:11,rev:0,total:16},pci:{comp:4,pend:9,rev:3,total:16},dqElec:{total:11,resp:0},dqPci:{total:14,resp:2},infoTec:[{label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Coord. protecciones",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"INCOMPLETO",pci:"NO"},{label:"Cálculo tierras",elec:"SI",pci:"NO"},{label:"Fichas técnicas",elec:"NO",pci:"NO"},{label:"Planos As-Built",elec:"NO",pci:"NO"}],hallazgos:[{id:1,sis:"Eléctrico",desc:"Tablero MDP1: interruptor instalado 2000A vs submittal 1600A.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},{id:2,sis:"Eléctrico",desc:"Circuitos no coinciden con diagrama unifilar.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},{id:3,sis:"Eléctrico",desc:"Etiquetar tableros — Art. 110.22 NOM-001.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},{id:4,sis:"Eléctrico",desc:"Aterrizar cajas registro — Art. 250 NOM-001.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},{id:5,sis:"Eléctrico",desc:"Tuberías impiden mantenimiento — Art. 110.26.",crit:"ALTO",fecha:"",est:"REVISAR",resp:"CHUFANI"},{id:6,sis:"Eléctrico",desc:"Alimentación planta emergencia 1000 KVA conectada.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},{id:7,sis:"Eléctrico",desc:"Alimentación media tensión — cable XLP instalado.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},{id:8,sis:"PCI",desc:"Soportes sísmicos faltantes en gabinetes de mangueras.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},{id:9,sis:"PCI",desc:"Extintores CO2 en áreas que requieren PQS.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},{id:10,sis:"PCI",desc:"Cuarto de bombas — equipo sin aterrizar.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},{id:11,sis:"PCI",desc:"Detector de flujo instalado muy alto.",crit:"MODERADO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},{id:12,sis:"PCI",desc:"Verificar altura alarmas estroboscópicas.",crit:"MODERADO",fecha:"28/10/2025",est:"REVISAR",resp:"CHUFANI"},{id:13,sis:"PCI",desc:"Hidrantes sin manómetro de presión.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},{id:14,sis:"PCI",desc:"Detectores OSID reubicados correctamente.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"}]},MX12:{update:"05/05/25",visita:"2a visita",goLive:"07/07/2025",desarrollador:"PANORAMA",elec:{comp:5,pend:8,rev:0,total:13},pci:{comp:3,pend:10,rev:1,total:14},dqElec:{total:13,resp:5},dqPci:{total:13,resp:4},infoTec:[{label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"SI",pci:"NO"},{label:"Fichas técnicas",elec:"SI",pci:"SI"},{label:"Planos As-Built",elec:"NO",pci:"NO"}],hallazgos:[{id:1,sis:"Eléctrico",desc:"Tierra física suelta en subestación.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"PANORAMA"},{id:2,sis:"Eléctrico",desc:"Colocar Marvetest en tablero.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"PANORAMA"},{id:3,sis:"Eléctrico",desc:"Etiquetar interruptor principal exterior.",crit:"MODERADO",fecha:"",est:"COMPLETADO",resp:"PANORAMA"},{id:5,sis:"PCI",desc:"Verificar cople flexible y soporte sísmico del Riser.",crit:"MODERADO",fecha:"",est:"REVISAR",resp:"PANORAMA"}]},XEM03:{update:"10/04/25",visita:"3a visita",goLive:"28/04/2025",desarrollador:"CONSTRUCTORA XEM",elec:{comp:3,pend:8,rev:1,total:12},pci:{comp:1,pend:5,rev:0,total:6},dqElec:{total:9,resp:2},dqPci:{total:7,resp:1},infoTec:[{label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"INCOMPLETO",pci:"NO"},{label:"Fichas técnicas",elec:"NO",pci:"SI"}],hallazgos:[{id:1,sis:"Eléctrico",desc:"Cajas abiertas con cable colorimetría 480v.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"},{id:2,sis:"Eléctrico",desc:"Interruptor principal no identificado.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"},{id:3,sis:"Eléctrico",desc:"MDP1: 10 interruptores vs 12 en diagrama.",crit:"MODERADO",fecha:"",est:"REVISAR",resp:"CONSTRUCTORA XEM"},{id:4,sis:"PCI",desc:"Colocación de espuma pendiente en transformadores.",crit:"SIN IMPACTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"}]},MX13:{update:"07/07/25",visita:"1a visita",goLive:"OCT 2025",desarrollador:"HERMOSILLO",elec:{comp:0,pend:11,rev:0,total:11},pci:{comp:0,pend:14,rev:0,total:14},dqElec:{total:11,resp:0},dqPci:{total:14,resp:1},infoTec:[{label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Coord. protecciones",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"NO",pci:"NO"},{label:"Fichas técnicas",elec:"NO",pci:"NO"}],hallazgos:[{id:1,sis:"Eléctrico",desc:"Tablero MDP1: interruptor 1800A para carga de 896A.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},{id:2,sis:"Eléctrico",desc:"Alumbrado emergencia — voltaje no coincide.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},{id:3,sis:"PCI",desc:"Falta memoria descriptiva del sistema.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},{id:4,sis:"PCI",desc:"Índice no presentado correctamente.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"}]}};
+const SITES={
+  XDQR02:{update:"28/10/25",visita:"3a visita",goLive:"15/01/2026",desarrollador:"GRUPO CHUFANI",
+    elec:{comp:2,pend:11,rev:0,total:16},pci:{comp:4,pend:9,rev:3,total:16},
+    dqElec:{total:11,resp:0},dqPci:{total:14,resp:2},
+    infoTec:[
+      {label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Coord. protecciones",elec:"NO",pci:"N/A"},
+      {label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"INCOMPLETO",pci:"NO"},
+      {label:"Cálculo tierras",elec:"SI",pci:"NO"},{label:"Memoria descriptiva",elec:"N/A",pci:"NO"},
+      {label:"Fichas técnicas",elec:"NO",pci:"NO"},{label:"Planos As-Built",elec:"NO",pci:"NO"},
+    ],
+    hallazgos:[
+      {id:1,sis:"Eléctrico",desc:"Tablero MDP1: interruptor instalado 2000A vs submittal 1600A.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:2,sis:"Eléctrico",desc:"Tablero MDP1: circuitos instalados no coinciden con diagrama unifilar.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:3,sis:"Eléctrico",desc:"Etiquetar tableros y canalizaciones — Art. 110.22 NOM-001.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:4,sis:"Eléctrico",desc:"Aterrizar cajas registro metálicas — Art. 250 NOM-001.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:5,sis:"Eléctrico",desc:"Tuberías impiden mantenimiento — Art. 110.26 NOM-001.",crit:"ALTO",fecha:"",est:"REVISAR",resp:"CHUFANI"},
+      {id:6,sis:"Eléctrico",desc:"Alimentación planta emergencia 1000 KVA conectada al tablero de transferencias.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},
+      {id:7,sis:"Eléctrico",desc:"Alimentación media tensión — cable XLP instalado.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},
+      {id:8,sis:"PCI",desc:"Soportes sísmicos faltantes en tuberías de gabinetes de mangueras.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:9,sis:"PCI",desc:"Extintores tipo CO2 en áreas que requieren tipo PQS.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:10,sis:"PCI",desc:"Cuarto de bombas — tanque diesel y equipos sin aterrizar.",crit:"ALTO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:11,sis:"PCI",desc:"Detector de flujo instalado muy alto — no se puede leer correctamente.",crit:"MODERADO",fecha:"28/10/2025",est:"PENDIENTE",resp:"CHUFANI"},
+      {id:12,sis:"PCI",desc:"Verificar altura alarmas estroboscópicas en columnas.",crit:"MODERADO",fecha:"28/10/2025",est:"REVISAR",resp:"CHUFANI"},
+      {id:13,sis:"PCI",desc:"Hidrantes con manguera sin manómetro de presión.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},
+      {id:14,sis:"PCI",desc:"Detectores OSID reubicados correctamente sobre área administrativa.",crit:"SIN IMPACTO",fecha:"15/01/2026",est:"COMPLETADO",resp:"CHUFANI"},
+    ]},
+  MX12:{update:"05/05/25",visita:"2a visita",goLive:"07/07/2025",desarrollador:"PANORAMA",
+    elec:{comp:5,pend:8,rev:0,total:13},pci:{comp:3,pend:10,rev:1,total:14},
+    dqElec:{total:13,resp:5},dqPci:{total:13,resp:4},
+    infoTec:[
+      {label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},
+      {label:"Submittals",elec:"SI",pci:"NO"},{label:"Cálculo tierras",elec:"SI",pci:"NO"},
+      {label:"Memoria descriptiva",elec:"N/A",pci:"NO"},{label:"Fichas técnicas",elec:"SI",pci:"SI"},
+      {label:"Planos As-Built",elec:"NO",pci:"NO"},{label:"Manuales",elec:"NO",pci:"NO"},
+    ],
+    hallazgos:[
+      {id:1,sis:"Eléctrico",desc:"Tierra física suelta en subestación.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"PANORAMA"},
+      {id:2,sis:"Eléctrico",desc:"Colocar Marvetest en tablero.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"PANORAMA"},
+      {id:3,sis:"Eléctrico",desc:"Etiquetar interruptor principal exterior.",crit:"MODERADO",fecha:"",est:"COMPLETADO",resp:"PANORAMA"},
+      {id:4,sis:"Eléctrico",desc:"Colorimetría de cableado conforme a voltaje.",crit:"MODERADO",fecha:"",est:"COMPLETADO",resp:"PANORAMA"},
+      {id:5,sis:"PCI",desc:"Verificar cople flexible y soporte sísmico del Riser.",crit:"MODERADO",fecha:"",est:"REVISAR",resp:"PANORAMA"},
+    ]},
+  XEM03:{update:"10/04/25",visita:"3a visita",goLive:"28/04/2025",desarrollador:"CONSTRUCTORA XEM",
+    elec:{comp:3,pend:8,rev:1,total:12},pci:{comp:1,pend:5,rev:0,total:6},
+    dqElec:{total:9,resp:2},dqPci:{total:7,resp:1},
+    infoTec:[
+      {label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Memoria de cálculo",elec:"NO",pci:"NO"},
+      {label:"Submittals",elec:"INCOMPLETO",pci:"NO"},{label:"Cálculo tierras",elec:"NO",pci:"NO"},
+      {label:"Fichas técnicas",elec:"NO",pci:"SI"},{label:"Planos As-Built",elec:"NO",pci:"NO"},
+    ],
+    hallazgos:[
+      {id:1,sis:"Eléctrico",desc:"Cajas abiertas con cable colorimetría 480v.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"},
+      {id:2,sis:"Eléctrico",desc:"Interruptor principal no identificado, forro dañado.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"},
+      {id:3,sis:"Eléctrico",desc:"MDP1: 10 interruptores instalados vs 12 en diagrama.",crit:"MODERADO",fecha:"",est:"REVISAR",resp:"CONSTRUCTORA XEM"},
+      {id:4,sis:"PCI",desc:"Colocación de espuma pendiente en transformadores.",crit:"SIN IMPACTO",fecha:"",est:"PENDIENTE",resp:"CONSTRUCTORA XEM"},
+    ]},
+  MX13:{update:"07/07/25",visita:"1a visita",goLive:"OCT 2025",desarrollador:"HERMOSILLO",
+    elec:{comp:0,pend:11,rev:0,total:11},pci:{comp:0,pend:14,rev:0,total:14},
+    dqElec:{total:11,resp:0},dqPci:{total:14,resp:1},
+    infoTec:[
+      {label:"Cálculo corto circuito",elec:"NO",pci:"N/A"},{label:"Coord. protecciones",elec:"NO",pci:"N/A"},
+      {label:"Memoria de cálculo",elec:"NO",pci:"NO"},{label:"Submittals",elec:"NO",pci:"NO"},
+      {label:"Cálculo tierras",elec:"NO",pci:"NO"},{label:"Memoria descriptiva",elec:"N/A",pci:"NO"},
+      {label:"Fichas técnicas",elec:"NO",pci:"NO"},{label:"Planos As-Built",elec:"NO",pci:"NO"},
+    ],
+    hallazgos:[
+      {id:1,sis:"Eléctrico",desc:"Tablero MDP1 interruptor 1800A para carga de 896A.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},
+      {id:2,sis:"Eléctrico",desc:"Sistema alumbrado emergencia — voltaje no coincide con simbología.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},
+      {id:3,sis:"PCI",desc:"Falta memoria descriptiva del sistema.",crit:"ALTO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},
+      {id:4,sis:"PCI",desc:"Índice no presentado correctamente.",crit:"MODERADO",fecha:"",est:"PENDIENTE",resp:"HERMOSILLO"},
+    ]},
+};
+
 let current="XDQR02",barInst=null,donutInst=null;
-const pC=v=>({ALTO:'<span class="pill pill-alto">ALTO</span>',MODERADO:'<span class="pill pill-mod">MODERADO</span>',"SIN IMPACTO":'<span class="pill pill-si">SIN IMPACTO</span>'}[v]||v);
-const pE=v=>({COMPLETADO:'<span class="pill pill-comp">COMPLETADO</span>',PENDIENTE:'<span class="pill pill-pend">PENDIENTE</span>',REVISAR:'<span class="pill pill-rev">REVISAR</span>'}[v]||v);
-const pS=v=>v==="Eléctrico"?'<span class="pill pill-elec">Eléctrico</span>':'<span class="pill pill-pci">PCI</span>';
+const pillCrit=v=>({ALTO:'<span class="pill pill-alto">ALTO</span>',MODERADO:'<span class="pill pill-mod">MODERADO</span>',"SIN IMPACTO":'<span class="pill pill-si">SIN IMPACTO</span>'}[v]||v);
+const pillEst=v=>({COMPLETADO:'<span class="pill pill-comp">COMPLETADO</span>',PENDIENTE:'<span class="pill pill-pend">PENDIENTE</span>',REVISAR:'<span class="pill pill-rev">REVISAR</span>'}[v]||v);
+const pillSis=v=>v==="Eléctrico"?'<span class="pill pill-elec">Eléctrico</span>':'<span class="pill pill-pci">PCI</span>';
+
 function loadSite(site){
   current=site;const d=SITES[site];
-  const tH=d.elec.total+d.pci.total,tP=d.elec.pend+d.pci.pend,tC=d.elec.comp+d.pci.comp,tR=d.elec.rev+d.pci.rev,pct=tH?Math.round(tC/tH*100):0;
-  document.getElementById("statCount").innerHTML='<b style="color:#fff">'+tH+'</b> hallazgos';
-  document.getElementById("statSite").innerHTML='<b style="color:var(--yellow)">'+site+'</b> · '+d.desarrollador;
-  document.getElementById("statUpdate").textContent='Actualizado: '+d.update;
-  document.getElementById("kpiRow").innerHTML=[{c:"c-yellow",l:"Hallazgos",v:tH,s:"Eléc:"+d.elec.total+" PCI:"+d.pci.total},{c:"c-red",l:"Pendientes",v:tP,s:"Eléc:"+d.elec.pend+" PCI:"+d.pci.pend},{c:"c-green",l:"Completados",v:tC,s:pct+"% avance"},{c:"c-orange",l:"Revisar",v:tR,s:"Eléc:"+d.elec.rev+" PCI:"+d.pci.rev},{c:"c-blue",l:"DQ Eléctrico",v:d.dqElec.total,s:d.dqElec.resp+" resp"},{c:"c-purple",l:"DQ PCI",v:d.dqPci.total,s:d.dqPci.resp+" resp"}].map(k=>'<div class="kpi-card '+k.c+'"><div class="kpi-label">'+k.l+'</div><div class="kpi-val">'+k.v+'</div><div class="kpi-sub">'+k.s+'</div></div>').join("");
-  document.getElementById("progSubtitle").textContent=d.visita+" · Go-live: "+d.goLive;
-  document.getElementById("progBars").innerHTML=[{l:"DQ Eléctrico",v:d.dqElec.resp,t:d.dqElec.total,c:"#378ADD"},{l:"DQ PCI",v:d.dqPci.resp,t:d.dqPci.total,c:"#FF4D4D"},{l:"On-site Eléctrico",v:d.elec.comp,t:d.elec.total,c:"#378ADD"},{l:"On-site PCI",v:d.pci.comp,t:d.pci.total,c:"#FF4D4D"}].map(r=>{const p=r.t?Math.round(r.v/r.t*100):0;return'<div class="prog-row"><div class="prog-lbl">'+r.l+'</div><div class="prog-track"><div class="prog-fill" style="width:'+p+'%;background:'+r.c+'"></div></div><div class="prog-pct">'+p+'%</div></div>';}).join("");
-  const al=d.hallazgos.filter(h=>h.crit==="ALTO").length,mo=d.hallazgos.filter(h=>h.crit==="MODERADO").length,si=d.hallazgos.filter(h=>h.crit==="SIN IMPACTO").length;
-  document.getElementById("donutLegend").innerHTML=[{c:"#FF4D4D",l:"Alto("+al+")"},{c:"#FF8C00",l:"Mod("+mo+")"},{c:"#00C48C",l:"S/I("+si+")"}].map(x=>'<span><span class="clegend-dot" style="background:'+x.c+'"></span>'+x.l+'</span>').join("");
+  const tH=d.elec.total+d.pci.total,tP=d.elec.pend+d.pci.pend,tC=d.elec.comp+d.pci.comp,tR=d.elec.rev+d.pci.rev;
+  const pct=tH?Math.round(tC/tH*100):0;
+  document.getElementById("statCount").innerHTML=`<b style="color:#fff">${tH}</b> hallazgos filtrados`;
+  document.getElementById("statSite").innerHTML=`Site: <b style="color:var(--yellow)">${site}</b> · Desarrollador: <b style="color:#fff">${d.desarrollador}</b>`;
+  document.getElementById("statUpdate").textContent=`Actualizado: ${d.update}`;
+  document.getElementById("kpiRow").innerHTML=[
+    {c:"c-yellow",l:"Hallazgos totales",v:tH,s:`Eléc: ${d.elec.total} · PCI: ${d.pci.total}`},
+    {c:"c-red",l:"Pendientes",v:tP,s:`Eléc: ${d.elec.pend} · PCI: ${d.pci.pend}`},
+    {c:"c-green",l:"Completados",v:tC,s:`${pct}% de avance`},
+    {c:"c-orange",l:"Revisar",v:tR,s:`Eléc: ${d.elec.rev} · PCI: ${d.pci.rev}`},
+    {c:"c-blue",l:"DQ Eléctrico",v:d.dqElec.total,s:`${d.dqElec.resp} resp. del desarrollador`},
+    {c:"c-purple",l:"DQ PCI",v:d.dqPci.total,s:`${d.dqPci.resp} resp. del desarrollador`},
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-val">${k.v}</div><div class="kpi-sub">${k.s}</div></div>`).join("");
+
+  document.getElementById("progSubtitle").textContent=`Visita ${d.visita} · Go-live: ${d.goLive}`;
+  document.getElementById("progBars").innerHTML=[
+    {l:"DQ Eléctrico",v:d.dqElec.resp,t:d.dqElec.total,c:"#378ADD"},
+    {l:"DQ PCI",v:d.dqPci.resp,t:d.dqPci.total,c:"#FF4D4D"},
+    {l:"On-site Eléctrico",v:d.elec.comp,t:d.elec.total,c:"#378ADD"},
+    {l:"On-site PCI",v:d.pci.comp,t:d.pci.total,c:"#FF4D4D"},
+  ].map(r=>{const p=r.t?Math.round(r.v/r.t*100):0;return`<div class="prog-row"><div class="prog-lbl">${r.l}</div><div class="prog-track"><div class="prog-fill" style="width:${p}%;background:${r.c}"></div></div><div class="prog-pct">${p}%</div></div>`;}).join("");
+
+  const altos=d.hallazgos.filter(h=>h.crit==="ALTO").length,mods=d.hallazgos.filter(h=>h.crit==="MODERADO").length,sis=d.hallazgos.filter(h=>h.crit==="SIN IMPACTO").length;
+  document.getElementById("donutLegend").innerHTML=[{c:"#FF4D4D",l:`Alto (${altos})`},{c:"#FF8C00",l:`Moderado (${mods})`},{c:"#00C48C",l:`Sin impacto (${sis})`}].map(x=>`<span><span class="clegend-dot" style="background:${x.c}"></span>${x.l}</span>`).join("");
   if(donutInst)donutInst.destroy();
-  donutInst=new Chart(document.getElementById("donutChart"),{type:"doughnut",data:{labels:["Alto","Moderado","Sin impacto"],datasets:[{data:[al,mo,si],backgroundColor:["#FF4D4D","#FF8C00","#00C48C"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"70%",plugins:{legend:{display:false}}}});
-  document.getElementById("barLegend").innerHTML=[{c:"#00C48C",l:"Completados"},{c:"#FF4D4D",l:"Pendientes"},{c:"#FF8C00",l:"Revisar"}].map(x=>'<span><span class="clegend-dot" style="background:'+x.c+'"></span>'+x.l+'</span>').join("");
+  donutInst=new Chart(document.getElementById("donutChart"),{type:"doughnut",data:{labels:["Alto","Moderado","Sin impacto"],datasets:[{data:[altos,mods,sis],backgroundColor:["#FF4D4D","#FF8C00","#00C48C"],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:"70%",plugins:{legend:{display:false}}}});
+
+  document.getElementById("barLegend").innerHTML=[{c:"#00C48C",l:"Completados"},{c:"#FF4D4D",l:"Pendientes"},{c:"#FF8C00",l:"Revisar"}].map(x=>`<span><span class="clegend-dot" style="background:${x.c}"></span>${x.l}</span>`).join("");
   if(barInst)barInst.destroy();
   barInst=new Chart(document.getElementById("barChart"),{type:"bar",data:{labels:["Eléctrico","PCI"],datasets:[{label:"Completados",data:[d.elec.comp,d.pci.comp],backgroundColor:"#00C48C",borderRadius:3},{label:"Pendientes",data:[d.elec.pend,d.pci.pend],backgroundColor:"#FF4D4D",borderRadius:3},{label:"Revisar",data:[d.elec.rev,d.pci.rev],backgroundColor:"#FF8C00",borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false},ticks:{color:"#6B82A0"}},y:{stacked:true,grid:{color:"rgba(255,255,255,.06)"},ticks:{color:"#6B82A0",stepSize:2}}},plugins:{legend:{display:false}}}});
-  document.getElementById("siteParams").innerHTML='<div class="itec-row"><span class="itec-label">Site</span><span style="color:#fff;font-weight:700">'+site+'</span></div><div class="itec-row"><span class="itec-label">Desarrollador</span><span style="color:#fff">'+d.desarrollador+'</span></div><div class="itec-row"><span class="itec-label">Última visita</span><span style="color:#fff">'+d.visita+'</span></div><div class="itec-row"><span class="itec-label">Go-live</span><span style="color:var(--yellow);font-weight:700">'+d.goLive+'</span></div><div class="itec-row"><span class="itec-label">ALTO sin cerrar</span><span style="color:#FF7070;font-weight:700">'+d.hallazgos.filter(h=>h.crit==="ALTO"&&h.est==="PENDIENTE").length+'</span></div>';
-  renderSis("Eléctrico",d.elec,"elecMini","elecBody");renderSis("PCI",d.pci,"pciMini","pciBody");renderAll();renderInfoTec(d);
+
+  document.getElementById("siteParams").innerHTML=`
+    <div class="itec-row"><span class="itec-label">Site</span><span style="color:#fff;font-weight:700">${site}</span></div>
+    <div class="itec-row"><span class="itec-label">Desarrollador</span><span style="color:#fff">${d.desarrollador}</span></div>
+    <div class="itec-row"><span class="itec-label">Última visita</span><span style="color:#fff">${d.visita}</span></div>
+    <div class="itec-row"><span class="itec-label">Go-live</span><span style="color:var(--yellow);font-weight:700">${d.goLive}</span></div>
+    <div class="itec-row"><span class="itec-label">Últ. actualización</span><span style="color:#fff">${d.update}</span></div>
+    <div class="itec-row"><span class="itec-label">Hallazgos ALTO sin cerrar</span><span style="color:#FF7070;font-weight:700">${d.hallazgos.filter(h=>h.crit==="ALTO"&&h.est==="PENDIENTE").length}</span></div>`;
+
+  renderSis("Eléctrico",d.elec,"elecMini","elecBody");
+  renderSis("PCI",d.pci,"pciMini","pciBody");
+  renderAll();renderInfoTec(d);
 }
+
 function renderSis(sis,data,mId,bId){
-  const h=SITES[current].hallazgos.filter(x=>x.sis===sis);
-  document.getElementById(mId).innerHTML=[{l:"Completados",v:data.comp,c:"var(--green)"},{l:"Pendientes",v:data.pend,c:"var(--red)"},{l:"Altos pendientes",v:h.filter(x=>x.crit==="ALTO"&&x.est==="PENDIENTE").length,c:"#FF7070"}].map(k=>'<div class="mini-kpi"><div class="mini-kpi-label">'+k.l+'</div><div class="mini-kpi-val" style="color:'+k.c+'">'+k.v+'</div></div>').join("");
-  document.getElementById(bId).innerHTML=h.map(x=>'<tr><td style="color:var(--text3)">'+x.id+'</td><td>'+x.desc+'</td><td>'+pC(x.crit)+'</td><td>'+pE(x.est)+'</td><td style="color:var(--text3);font-size:11px">'+x.resp+'</td></tr>').join("");
+  const d=SITES[current],h=d.hallazgos.filter(x=>x.sis===sis);
+  document.getElementById(mId).innerHTML=[{l:"Completados",v:data.comp,c:"var(--green)"},{l:"Pendientes",v:data.pend,c:"var(--red)"},{l:"Altos sin cerrar",v:h.filter(x=>x.crit==="ALTO"&&x.est==="PENDIENTE").length,c:"#FF7070"}].map(k=>`<div class="mini-kpi"><div class="mini-kpi-label">${k.l}</div><div class="mini-kpi-val" style="color:${k.c}">${k.v}</div></div>`).join("");
+  document.getElementById(bId).innerHTML=h.map(x=>`<tr><td style="color:var(--text3)">${x.id}</td><td>${x.desc}</td><td>${pillCrit(x.crit)}</td><td>${pillEst(x.est)}</td><td style="color:var(--text3);font-size:11px">${x.resp}</td></tr>`).join("");
 }
+
 function renderAll(){
   const d=SITES[current],fS=document.getElementById("selSistema").value,fE=document.getElementById("selEstatus").value,fC=document.getElementById("selCrit").value;
   const f=d.hallazgos.filter(h=>(!fS||h.sis===fS)&&(!fE||h.est===fE)&&(!fC||h.crit===fC));
-  document.getElementById("hallazgosCount").textContent=f.length+" hallazgos";
-  document.getElementById("allBody").innerHTML=f.map(h=>'<tr><td style="color:var(--text3)">'+h.id+'</td><td>'+pS(h.sis)+'</td><td>'+h.desc+'</td><td>'+pC(h.crit)+'</td><td style="color:var(--text3);font-size:11px">'+(h.fecha||"—")+'</td><td>'+pE(h.est)+'</td><td style="color:var(--text3);font-size:11px">'+h.resp+'</td></tr>').join("");
+  document.getElementById("hallazgosCount").textContent=`${f.length} hallazgos`;
+  document.getElementById("allBody").innerHTML=f.map(h=>`<tr><td style="color:var(--text3)">${h.id}</td><td>${pillSis(h.sis)}</td><td>${h.desc}</td><td>${pillCrit(h.crit)}</td><td style="color:var(--text3);font-size:11px">${h.fecha||"—"}</td><td>${pillEst(h.est)}</td><td style="color:var(--text3);font-size:11px">${h.resp}</td></tr>`).join("");
 }
+
 function renderInfoTec(d){
-  const st=v=>v==="SI"?'<span class="pill pill-si">SI</span>':v==="NO"?'<span class="pill pill-alto">NO</span>':v==="INCOMPLETO"?'<span class="pill pill-mod">INCOMPLETO</span>':'<span class="pill" style="background:rgba(255,255,255,.08);color:var(--text2)">'+v+'</span>';
-  document.getElementById("infoTecBody").innerHTML=d.infoTec.map(r=>'<tr><td>'+r.label+'</td><td style="text-align:center">'+st(r.elec)+'</td><td style="text-align:center">'+st(r.pci)+'</td></tr>').join("");
+  const st=v=>v==="SI"?'<span class="pill pill-si">SI</span>':v==="NO"?'<span class="pill pill-alto">NO</span>':v==="INCOMPLETO"?'<span class="pill pill-mod">INCOMPLETO</span>':`<span class="pill" style="background:rgba(255,255,255,.08);color:var(--text2)">${v}</span>`;
+  document.getElementById("infoTecBody").innerHTML=d.infoTec.map(r=>`<tr><td>${r.label}</td><td style="text-align:center">${st(r.elec)}</td><td style="text-align:center">${st(r.pci)}</td></tr>`).join("");
 }
+
 function applyFilters(){renderAll();}
 function clearFilters(){["selSistema","selEstatus","selCrit"].forEach(id=>document.getElementById(id).value="");renderAll();}
-function switchTab(name,btn){document.querySelectorAll(".tab-content").forEach(el=>el.classList.remove("active"));document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));document.getElementById("tab"+name.charAt(0).toUpperCase()+name.slice(1)).classList.add("active");btn.classList.add("active");}
+function switchTab(name,btn){
+  document.querySelectorAll(".tab-content").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab"+name.charAt(0).toUpperCase()+name.slice(1)).classList.add("active");
+  btn.classList.add("active");
+}
 loadSite("XDQR02");
 </script>
 </body>
